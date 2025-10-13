@@ -1,8 +1,9 @@
 import streamlit as st
-from utils import add_bg_with_overlay
+from utils import add_bg_with_overlay, inject_navbar
 
 st.set_page_config(page_title="Experience - Alfred Malinga", page_icon="💼", layout="wide")
 add_bg_with_overlay("background_image.png", opacity=0.4)
+inject_navbar(active="Experience")
 
 st.header("💼 Experience")
 
@@ -36,19 +37,19 @@ experience_html = """
     <div class="exp-role">System Developer Trainee</div>
     <div class="exp-company">Mindworx Consulting</div>
     <div class="exp-dates">2023 – Present</div>
-    <div class="exp-desc">Assisted in backend development and CRM customization...</div>
+    <div class="exp-desc">Assisted in backend development and CRM customization, improving system efficiency and client workflows.</div>
   </div>
   <div class="experience-card">
     <div class="exp-role">Software Developer Intern</div>
     <div class="exp-company">UNITAP (PTY) LTD</div>
     <div class="exp-dates">2022 – 2023</div>
-    <div class="exp-desc">Contributed to e-commerce platform development using Python and SQL...</div>
+    <div class="exp-desc">Contributed to e-commerce platform development using Python and SQL, focusing on payment integration and data pipelines.</div>
   </div>
   <div class="experience-card">
     <div class="exp-role">Data Analyst</div>
     <div class="exp-company">Dry Dock Liquor</div>
     <div class="exp-dates">2021 – 2022</div>
-    <div class="exp-desc">Designed Power BI dashboards to track sales and inventory trends...</div>
+    <div class="exp-desc">Designed Power BI dashboards to track sales and inventory trends, enabling data-driven decision-making.</div>
   </div>
 </div>
 """

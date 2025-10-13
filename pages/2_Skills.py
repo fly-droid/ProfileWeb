@@ -1,8 +1,9 @@
 import streamlit as st
-from utils import add_bg_with_overlay
+from utils import add_bg_with_overlay, inject_navbar
 
 st.set_page_config(page_title="Skills - Alfred Malinga", page_icon="🛠️", layout="wide")
 add_bg_with_overlay("background_image.png", opacity=0.4)
+inject_navbar(active="Skills")
 
 st.header("🛠️ Skills")
 
