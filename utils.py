@@ -1,7 +1,6 @@
 import streamlit as st
 import base64, os
 
-
 def add_bg_with_overlay(image_file, opacity=0.4):
     """Adds a background image with dark overlay."""
     if not os.path.exists(image_file):
@@ -12,27 +11,103 @@ def add_bg_with_overlay(image_file, opacity=0.4):
         f"""
         <style>
         .stApp {{
-            background: linear-gradient(rgba(0,0,0,{opacity}), rgba(0,0,0,{opacity})),
-                        url("data:image/png;base64,{encoded}");
+            background: linear-gradient(rgba(0,0,0,{opacity}), rgba(0,0,0,{opacity})), url("data:image/png;base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }}
-        .block-container {{ padding-top: 80px !important; }}
+        .block-container {{
+            padding-top: 100px !important;
+        }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
 def inject_navbar(active="About"):
-    """Injects a GitHub-style top navbar with active link highlighting."""
-    hide_st_style = """
-            <style>
-            header {visibility: hidden;}
-            </style>
-            """
-    st.markdown(hide_st_style, unsafe_allow_html=True)
-    
+    """Injects a responsive navbar with CSS-only dropdown sidebar on mobile."""
+    st.markdown("""
+    <style>
+    header {visibility: hidden;}
+
+    .navbar {
+        background-color: rgba(26,26,26,0.95);
+        padding: 12px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .nav-toggle {
+        display: none;
+    }
+
+    .nav-toggle-label {
+        display: none;
+        font-size: 18px;
+        color: #e0e0e0;
+        cursor: pointer;
+        padding: 10px;
+    }
+
+    .nav-links {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .nav-links a {
+        color: #e0e0e0;
+        text-decoration: none;
+        padding: 10px 18px;
+        font-weight: 500;
+        transition: background 0.3s, color 0.3s;
+        border-radius: 6px;
+        margin: 6px;
+        white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+        background: #14ffec;
+        color: #1a1a1a;
+    }
+
+    .nav-links a.active {
+        background: #0d7377;
+        color: #fff;
+    }
+
+    @media screen and (max-width: 768px) {
+        .nav-toggle-label {
+            display: block;
+        }
+
+        .nav-links {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .nav-toggle:checked + .nav-toggle-label + .nav-links {
+            display: flex;
+        }
+
+        .nav-links a {
+            width: 100%;
+            text-align: left;
+            margin: 0;
+            padding: 12px 20px;
+            border-radius: 0;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     pages = ["About", "Skills", "Experience", "Projects", "Contact"]
     icons = {
         "About": "fa-user",
@@ -49,35 +124,11 @@ def inject_navbar(active="About"):
 
     st.markdown(f"""
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-    .navbar {{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: rgba(26,26,26,0.9);
-        padding: 12px;
-        position: fixed;
-        top: 0; left: 0; width: 100%;
-        z-index: 9999;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-    }}
-    .navbar a {{
-        color: #e0e0e0;
-        text-decoration: none;
-        padding: 10px 18px;
-        font-weight: 500;
-        transition: background 0.3s, color 0.3s;
-        border-radius: 6px;
-        margin: 0 6px;
-    }}
-    .navbar a:hover {{
-        background: #14ffec;
-        color: #1a1a1a;
-    }}
-    .navbar a.active {{
-        background: #0d7377;
-        color: #fff;
-    }}
-    </style>
-    <div class="navbar">{links}</div>
+    <div class="navbar">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label"><i class="fas fa-bars"></i> Menu</label>
+        <div class="nav-links">
+            {links}
+        </div>
+    </div>
     """, unsafe_allow_html=True)
