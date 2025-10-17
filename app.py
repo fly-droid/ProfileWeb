@@ -5,7 +5,7 @@ st.set_page_config(page_title="Alfred Malinga - CV", page_icon="📄", layout="w
 
 
 add_bg_with_overlay("background_image.png", opacity=0.4)
-inject_navbar(active="About")
+inject_navbar(active= None)
 
-st.title("Welcome to My CV App")
+st.title("Welcome to My Ditgital CV App")
 st.write("Use the navbar above to navigate through my profile.")

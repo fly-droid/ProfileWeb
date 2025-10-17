@@ -36,19 +36,16 @@ experience_html = """
   <div class="experience-card">
     <div class="exp-role">System Developer Trainee</div>
     <div class="exp-company">Mindworx Consulting</div>
-    <div class="exp-dates">2023 – Present</div>
     <div class="exp-desc">Assisted in backend development and CRM customization, improving system efficiency and client workflows.</div>
   </div>
   <div class="experience-card">
     <div class="exp-role">Software Developer Intern</div>
     <div class="exp-company">UNITAP (PTY) LTD</div>
-    <div class="exp-dates">2022 – 2023</div>
     <div class="exp-desc">Contributed to e-commerce platform development using Python and SQL, focusing on payment integration and data pipelines.</div>
   </div>
   <div class="experience-card">
     <div class="exp-role">Data Analyst</div>
     <div class="exp-company">Dry Dock Liquor</div>
-    <div class="exp-dates">2021 – 2022</div>
     <div class="exp-desc">Designed Power BI dashboards to track sales and inventory trends, enabling data-driven decision-making.</div>
   </div>
 </div>

@@ -3,7 +3,7 @@ from utils import add_bg_with_overlay, inject_navbar
 from PIL import Image
 import os
 
-PROFILE_PIC = "PROFILE_PIC.jpg"
+PROFILE_PIC = "PROFILE_PIC.png"
 CV_FILE = "CV_AlfredMalinga.pdf"
 
 st.set_page_config(page_title="About - Alfred Malinga", page_icon="👤", layout="wide")
@@ -15,7 +15,7 @@ with col1:
     if os.path.exists(PROFILE_PIC):
         st.image(Image.open(PROFILE_PIC), width=160)
 with col2:
-    st.header("👤 About Me")
+    st.header("Alfred Sakhile Malinga")
     st.write("Computer Science graduate with experience across IT support, software development, and data analytics...")
     if os.path.exists(CV_FILE):
         with open(CV_FILE, "rb") as f:
