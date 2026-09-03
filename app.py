@@ -1,17 +1,23 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+import streamlit.components.v1 as components
 from utils import add_bg_with_overlay
 from PIL import Image
 import os
+import json
 
-# 1. Page Config (Run once for the whole app)
+# --- CHATBOT IMPORTS ---
+from ai_generator import generate_tailored_content, process_chat_message
+from pdf_generator import create_cv_pdf
+
+
+# 1. Page Config
 st.set_page_config(page_title="Alfred Malinga - CV",
                    page_icon="📄", layout="wide")
 
-# 2. Background
+# 2. Background and Styling
 add_bg_with_overlay("background_image.png", opacity=0.4)
 
-# 3. CSS Media Queries for Responsive Swap (Top on Desktop, Side on Mobile)
 st.markdown("""
     <style>
     /* Remove default top padding */
@@ -47,11 +53,24 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 4. State Management (To keep both menus in sync)
+# 3. State Management
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = "About"
 
-# 5. Define content functions
+# --- CHATBOT DATA LOADER ---
+
+
+@st.cache_data
+def load_master_data():
+    try:
+        with open("master_data.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        st.error(
+            "Could not find master_data.json. Please ensure it is in the same folder.")
+        return None
+
+# 4. Define Content Functions
 
 
 def show_about():
@@ -200,13 +219,119 @@ def show_contact():
     st.markdown(contact_html, unsafe_allow_html=True)
 
 
-# 6. Render TOP MENU (Visible ONLY on Desktop)
+def show_chatbot():
+    st.header("🤖 Alfred's AI Agent")
+
+    master_data = load_master_data()
+
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "assistant", "content": "Hi! I am Alfred! Ask me anything about me and I will answer in the most relevant way. You can also paste a job description here, and I will generate a fully tailored CV for you, to see if am the best fit for the role."}
+        ]
+
+    # Render previous chat messages
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+            # If a previous message generated a PDF, re-render the download button
+            if "pdf_data" in msg:
+                st.download_button(
+                    label="📥 Download Tailored CV",
+                    data=msg["pdf_data"],
+                    file_name=msg["pdf_name"],
+                    mime="application/pdf",
+                    key=msg.get("pdf_key", msg["pdf_name"])
+                )
+
+    # Handle new user input
+    if user_input := st.chat_input("Ask a question or paste a job description..."):
+
+        st.session_state.messages.append(
+            {"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.markdown(user_input)
+
+        with st.chat_message("assistant"):
+            if not master_data:
+                st.error("Master data missing. Cannot proceed.")
+            else:
+                with st.spinner("Thinking..."):
+                    try:
+                        # 1. Route the message (Is it a question or a job description?)
+                        chat_response = process_chat_message(
+                            master_data=master_data,
+                            user_input=user_input,
+                            api_key=st.secrets["GEMINI_API_KEY"]
+                        )
+
+                        # 2. Display the bot's conversational reply
+                        st.markdown(chat_response.reply)
+
+                        # Create a dictionary to store the assistant's reply in the session state
+                        assistant_msg = {"role": "assistant",
+                                         "content": chat_response.reply}
+
+                        # 3. If the AI detected a job description, trigger the CV pipeline
+                        if chat_response.intent == 'cv':
+                            with st.spinner("Tailoring CV to the job description..."):
+
+                                # Run CV logic
+                                tailored_data = generate_tailored_content(
+                                    master_data=master_data,
+                                    job_desc=user_input,
+                                    api_key=st.secrets["GEMINI_API_KEY"]
+                                )
+
+                                temp_pdf_path = "temp_tailored_cv.pdf"
+                                create_cv_pdf(
+                                    static_data=master_data,
+                                    tailored_data=tailored_data,
+                                    target_job_title="Data Professional",
+                                    output_filename=temp_pdf_path
+                                )
+
+                                with open(temp_pdf_path, "rb") as pdf_file:
+                                    pdf_bytes = pdf_file.read()
+
+                                pdf_filename = "Alfred_Malinga_Tailored_CV.pdf"
+                                unique_dl_key = f"dl_btn_{len(st.session_state.messages)}"
+
+                                success_text = "\n\n✅ **Success! Your tailored CV is ready to download.**"
+                                st.markdown(success_text)
+
+                                st.download_button(
+                                    label="📥 Download Tailored CV",
+                                    data=pdf_bytes,
+                                    file_name=pdf_filename,
+                                    mime="application/pdf",
+                                    key=unique_dl_key
+                                )
+
+                                # Attach the PDF data to the assistant's message in the history
+                                assistant_msg["pdf_data"] = pdf_bytes
+                                assistant_msg["pdf_name"] = pdf_filename
+                                assistant_msg["pdf_key"] = unique_dl_key
+
+                        # Finally, save the complete message (with or without PDF) to the chat history
+                        st.session_state.messages.append(assistant_msg)
+
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
+
+
+# Define Menu Variables
+menu_options = ["About", "Skills", "Experience",
+                "Projects", "AI CV Bot", "Contact"]
+menu_icons = ["person", "code-slash",
+              "briefcase", "rocket", "robot", "envelope"]
+
+# 5. Render TOP MENU (Visible ONLY on Desktop)
 top_selected = option_menu(
     menu_title=None,
-    options=["About", "Skills", "Experience", "Projects", "Contact"],
-    icons=["person", "code-slash", "briefcase", "rocket", "envelope"],
-    default_index=["About", "Skills", "Experience", "Projects",
-                   "Contact"].index(st.session_state.active_tab),
+    options=menu_options,
+    icons=menu_icons,
+    default_index=menu_options.index(st.session_state.active_tab),
     orientation="horizontal",
     key="top_menu_key",
     styles={
@@ -217,14 +342,13 @@ top_selected = option_menu(
     }
 )
 
-# 7. Render SIDE MENU (Visible ONLY on Mobile)
+# 6. Render SIDE MENU (Visible ONLY on Mobile)
 with st.sidebar:
     side_selected = option_menu(
         menu_title="Main Menu",
-        options=["About", "Skills", "Experience", "Projects", "Contact"],
-        icons=["person", "code-slash", "briefcase", "rocket", "envelope"],
-        default_index=["About", "Skills", "Experience", "Projects",
-                       "Contact"].index(st.session_state.active_tab),
+        options=menu_options,
+        icons=menu_icons,
+        default_index=menu_options.index(st.session_state.active_tab),
         orientation="vertical",
         key="side_menu_key",
         styles={
@@ -235,7 +359,7 @@ with st.sidebar:
         }
     )
 
-# 8. Sync Logic (Check which menu the user clicked and update state)
+# 7. Menu Sync Logic
 if top_selected != st.session_state.active_tab:
     st.session_state.active_tab = top_selected
     st.rerun()
@@ -243,7 +367,7 @@ elif side_selected != st.session_state.active_tab:
     st.session_state.active_tab = side_selected
     st.rerun()
 
-# 9. Route to the correct view instantly
+# 8. Route to Content
 current_page = st.session_state.active_tab
 
 if current_page == "About":
@@ -254,5 +378,25 @@ elif current_page == "Experience":
     show_experience()
 elif current_page == "Projects":
     show_projects()
+elif current_page == "AI CV Bot":
+    show_chatbot()
 elif current_page == "Contact":
     show_contact()
+
+# 9. Auto-close sidebar script on mobile
+components.html(
+    """
+    <script>
+    setTimeout(function() {
+        const parentDoc = window.parent.document;
+        const closeBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]') 
+                      || parentDoc.querySelector('button[aria-label="Close"]');
+        if (closeBtn) {
+            closeBtn.click();
+        }
+    }, 150);
+    </script>
+    """,
+    height=0,
+    width=0
+)

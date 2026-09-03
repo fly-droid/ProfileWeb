@@ -1,0 +1,85 @@
+{
+    "personal_info": {
+        "name": "Alfred Malinga",
+        "email": "alfredmalinga696@gmail.com",
+        "phone": "081 858 1429",
+        "address": "38 Van Beek St, Doornfontein, Johannesburg, 2094"
+    },
+    "master_experience": [
+        {
+            "title": "Junior Data Analyst",
+            "company": "Netbank EQSRA Division - Johannesburg, South Africa",
+            "dates": "Feb 2026-Present",
+            "all_possible_bullets": [
+                "Developed and maintained SQL and ETL pipelines to ingest vehicle telematics and asset tracking data, reducing daily data processing delays.",
+                "Automated financial and fleet operational reporting workflows, providing real-time visibility into vehicle maintenance costs and fuel consumption across the banking division.",
+                "Collaborated with data analysts and risk teams to ensure data integrity, clean raw telematics logs, and build structured database tables for compliance auditing."
+            ]
+        },
+        {
+            "title": "Internship System Developer and Data Analyst",
+            "company": "Dry Dock, Mindworx Consulting & Academy - Johannesburg, South Africa",
+            "dates": "Feb 2025-Dec 2025",
+            "all_possible_bullets": [
+                "Provided administrative support to a team of 20+ employees, including calendar management, expense reporting, and meeting coordination.",
+                "Acted as a liaison between departments, fostering effective communication and collaboration.",
+                "Assisted in onboarding new employees, facilitating orientation sessions and ensuring compliance with company policies."
+            ]
+        },
+        {
+            "title": "Internship Software Developer",
+            "company": "UNITAP - Johannesburg, South Africa",
+            "dates": "Jan 2024-Dec 2024",
+            "all_possible_bullets": [
+                "Assisted in developing and testing backend modules using Python and RESTful APIs, improving core application performance and data retrieval times.",
+                "Collaborated with senior developers to write clean, maintainable code, participating in code reviews, bug fixing, and version control management via Git.",
+                "Designed and executed SQL database queries to support software feature integration and perform daily data validation for internal applications."
+            ]
+        }
+    ],
+    "master_skills": {
+        "Tools": "SQL Server, Alteryx, Power BI, Tableau, Excel, Git, Docker, Apache Airflow, Lightspeed X, Shopify",
+        "Programming Languages": "SQL, Python (Pandas, Matplotlib, Seaborn), R, Java, C#, VB.NET, HTML, CSS, JavaScript",
+        "Web Services": "AWS, Azure",
+        "Soft Skills": "Problem-solving, Analytical Thinking, Collaboration, Communication"
+    },
+    "education": [
+        {
+            "degree": "NQ Level 5 Certificate System Development",
+            "institution": "Mindworx Academy",
+            "year": "Graduated 2025"
+        },
+        {
+            "degree": "Bachelors - Computer Science",
+            "institution": "University of Venda",
+            "year": "Graduated 2023"
+        },
+        {
+            "degree": "Matric (Grade 12)",
+            "institution": "Sasamala Secondary School",
+            "year": ""
+        }
+    ],
+    "certifications": [
+        "Microsoft Certified: Power BI Data Analysis Associate",
+        "Microsoft Certified: Azure AI Engineer Associate",
+        "Microsoft Certified: Azure Data Fundamentals",
+        "Deloitte Australia Data Analytics Job Simulation on Forage"
+    ],
+    "references": [
+        {
+            "name": "Mrs. Lerato Radebe",
+            "title": "Supervisor",
+            "company": "Netbank EQSTRA Division",
+            "phone": "076 294 5498",
+            "email": "Iradebe@eqstra.co.za"
+        },
+        {
+            "name": "Mr. Matthew Thaver",
+            "title": "Manager",
+            "company": "Dry Dock Liquor",
+            "phone": "082 331 9010",
+            "email": "matthewt@drydockliquor.co.za"
+        }
+    ]
+}
